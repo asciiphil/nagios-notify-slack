@@ -1,0 +1,123 @@
+#!/usr/bin/env python
+
+import optparse
+import os
+import json
+import sys
+
+import requests
+
+NOTIFICATION_EMOJI = {
+    'PROBLEM':           ':scream:',
+    'RECOVERY':          ':smiley:',
+    'ACKNOWLEDGEMENT':   ':wrench:',
+    'FLAPPINGSTART':     ':checkered_flag:',
+    'FLAPPINGSTOP':      ':end:',
+    'FLAPPINGDISABLED':  ':wrench:',
+    'DOWNTIMESTART':     ':construction:',
+    'DOWNTIMEEND':       ':construction:',
+    'DOWNTIMECANCELLED': ':construction:',
+    'CUSTOM':            ':alien:',
+}
+
+NOTIFICATION_COLORS = {
+    'PROBLEM':           'danger',
+    'RECOVERY':          'good',
+    'ACKNOWLEDGEMENT':   'warning',
+    'FLAPPINGSTART':     '#19FFF4',
+    'FLAPPINGSTOP':      '#19FFF4',
+    'FLAPPINGDISABLED':  '#19FFF4',
+    'DOWNTIMESTART':     '#7C19FF',
+    'DOWNTIMEEND':       '#7C19FF',
+    'DOWNTIMECANCELLED': '#7C19FF',
+    'CUSTOM':            '#D3D3D3',
+}
+
+NOTIFICATION_STATUSES = {
+    'FLAPPINGSTART':     'Service has begun flapping (notifications disabled).',
+    'FLAPPINGSTOP':      'Service has stopped flapping (notifications enabled).',
+    'FLAPPINGDISABLED':  'Flap detection has been turned off (notifications enabled).',
+    'DOWNTIMESTART':     'Now in scheduled downtime (notifications disabled).',
+    'DOWNTIMEEND':       'Scheduled downtime finished (notifications enabled).',
+    'DOWNTIMECANCELLED': 'Scheduled downtime cancelled early (notifications enabled).',
+    'CUSTOM':            '',
+}
+
+def check_option(name, value):
+    if value is None:
+        print >>sys.stderr, 'No {} given.'.format(name)
+        exit(1)
+        
+def add_param(payload, key, value):
+    if value is not None:
+        payload[key] = value
+
+parser = optparse.OptionParser()
+parser.add_option('-W', '--webhook', help='Webhook URL to use.  Overrides WEBHOOK environment variable.')
+parser.add_option('-C', '--channel')
+parser.add_option('-U', '--username')
+parser.add_option('-I', '--icon', help='Must be a valid emoji string.')
+parser.add_option('-t', '--notification-type')
+parser.add_option('-a', '--host-alias')
+parser.add_option('-d', '--service-desc')
+parser.add_option('-w', '--time', type='int', help='Epoch seconds (use $TIMET$)')
+parser.add_option('-s', '--state')
+parser.add_option('-o', '--output')
+parser.add_option('-u', '--ack-authors')
+parser.add_option('-c', '--ack-comments')
+parser.add_option('-n', '--notification-comments')
+parser.add_option(      '--debug', action='store_true')
+(options, args) = parser.parse_args()
+
+if options.webhook is None:
+    if 'WEBHOOK' in os.environ:
+        options.webhook = os.environ['WEBHOOK']
+    else:
+        print >>sys.stderr, 'No webhook given.'
+        exit(1)
+
+check_option('notification type', options.notification_type)    
+check_option('host alias', options.host_alias)
+
+attachment = {}
+payload = {'attachments': [attachment]}
+add_param(payload, 'channel', options.channel)
+add_param(payload, 'username', options.username)
+add_param(payload, 'icon_emoji', options.icon)
+
+if options.notification_type in NOTIFICATION_EMOJI:
+    payload['text'] = '{} {}'.format(options.notification_type, NOTIFICATION_EMOJI[options.notification_type])
+else:
+    payload['text'] = options.notification_type
+
+if options.notification_type in NOTIFICATION_COLORS:
+    attachment['color'] = NOTIFICATION_COLORS[options.notification_type]
+    
+if options.service_desc is not None:
+    attachment['title'] = '{}: {}'.format(options.host_alias, options.service_desc)
+else:
+    attachment['title'] = options.host_alias
+
+if options.notification_type in NOTIFICATION_STATUSES:
+    attachment['text'] = NOTIFICATION_STATUSES[options.notification_type]
+else:
+    attachment['text'] = '{}: {}'.format(options.state, options.output)
+    
+attachment['fallback'] = "{}\n{}".format(attachment['title'], attachment['text'])
+
+if options.notification_type == 'ACKNOWLEDGEMENT':
+    attachment['fields'] = [
+        {'title': 'Handled By', 'value': options.ack_authors,  'short': False},
+        {'title': 'Comment',    'value': options.ack_comments, 'short': False},
+    ]
+    attachment['fallback'] += "\nHandled By {}: {}".format(options.ack_authors, options.ack_comments)
+if options.time is not None:
+    attachment['ts'] = options.time
+    
+if options.debug:
+    attachment['footer'] = 'This is a test message.  Please ignore it.'
+
+if options.debug:
+    print json.dumps(payload)
+r = requests.post(options.webhook, json=payload)
+r.raise_for_status()
