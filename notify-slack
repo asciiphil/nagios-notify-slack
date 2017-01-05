@@ -63,9 +63,9 @@ parser.add_option('-d', '--service-desc')
 parser.add_option('-w', '--time', type='int', help='Epoch seconds (use $TIMET$)')
 parser.add_option('-s', '--state')
 parser.add_option('-o', '--output')
-parser.add_option('-u', '--ack-authors')
-parser.add_option('-c', '--ack-comments')
-parser.add_option('-n', '--notification-comments')
+parser.add_option('-u', '--ack-author')
+parser.add_option('-c', '--ack-comment')
+parser.add_option('-n', '--notification-comment')
 parser.add_option(      '--debug', action='store_true')
 (options, args) = parser.parse_args()
 
@@ -107,10 +107,10 @@ attachment['fallback'] = "{}\n{}".format(attachment['title'], attachment['text']
 
 if options.notification_type == 'ACKNOWLEDGEMENT':
     attachment['fields'] = [
-        {'title': 'Handled By', 'value': options.ack_authors,  'short': False},
-        {'title': 'Comment',    'value': options.ack_comments, 'short': False},
+        {'title': 'Handled By', 'value': options.ack_author,  'short': False},
+        {'title': 'Comment',    'value': options.ack_comment, 'short': False},
     ]
-    attachment['fallback'] += "\nHandled By {}: {}".format(options.ack_authors, options.ack_comments)
+    attachment['fallback'] += "\nHandled By {}: {}".format(options.ack_author, options.ack_comment)
 if options.time is not None:
     attachment['ts'] = options.time
     
