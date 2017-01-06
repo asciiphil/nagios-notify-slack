@@ -65,7 +65,7 @@ parser.add_option('-W', '--webhook', help='Webhook URL to use.  Overrides WEBHOO
 parser.add_option('-C', '--channel')
 parser.add_option('-U', '--username')
 parser.add_option('-I', '--icon', help='Must be a valid emoji string.')
-parser.add_option(      '--state-icon', action='store_true', help='Use the emoji for the notification type as the bot''s icon.')
+parser.add_option(      '--state-icon', action='store_true', help='Use the emoji for the notification type as the bot\'s icon.')
 parser.add_option('-t', '--notification-type')
 parser.add_option('-a', '--host-alias')
 parser.add_option('-d', '--service-desc')
