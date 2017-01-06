@@ -85,37 +85,46 @@ add_param(payload, 'channel', options.channel)
 add_param(payload, 'username', options.username)
 add_param(payload, 'icon_emoji', options.icon)
 
+## Message text - Just the type of notification and an appropriate emoji.
 if options.notification_type in NOTIFICATION_EMOJI:
     payload['text'] = '{0} {1}'.format(options.notification_type, NOTIFICATION_EMOJI[options.notification_type])
 else:
     payload['text'] = options.notification_type
 
+## Attachment color
 if options.notification_type in NOTIFICATION_COLORS:
     attachment['color'] = NOTIFICATION_COLORS[options.notification_type]
-    
+
+## Attachment title - equivalent to email subject
 if options.service_desc is not None:
-    attachment['title'] = '{0}: {1}'.format(options.host_alias, options.service_desc)
+    attachment['title'] = '{0} / {1}'.format(options.host_alias, options.service_desc)
 else:
     attachment['title'] = options.host_alias
 
+## Attachment text - equivalent to email body
 if options.notification_type in NOTIFICATION_STATUSES:
     attachment['text'] = NOTIFICATION_STATUSES[options.notification_type]
 else:
-    attachment['text'] = '{0}: {1}'.format(options.state, options.output)
-    
-attachment['fallback'] = "{0}\n{1}".format(attachment['title'], attachment['text'])
+    attachment['title'] += ' is {0}'.format(options.state)
+    attachment['text'] = options.output
 
+## Attachment fallback - One-line summary of the notification.
+attachment['fallback'] = "{0}: {1}".format(attachment['title'], attachment['text'])
+
+## Additional fields for acknowledgements; who ACKed and what they said.
 if options.notification_type == 'ACKNOWLEDGEMENT':
     attachment['fields'] = [
         {'title': 'Handled By', 'value': options.ack_author,  'short': False},
         {'title': 'Comment',    'value': options.ack_comment, 'short': False},
     ]
     attachment['fallback'] += "\nHandled By {0}: {1}".format(options.ack_author, options.ack_comment)
+
+## Attachment time - When the notification was generated.
 if options.time is not None:
     attachment['ts'] = options.time
     
 if options.debug:
-    attachment['footer'] = 'This is a test message.  Please ignore it.'
+    attachment['pretext'] = 'This is a test message.  Please ignore it.'
 
 if options.debug:
     print json.dumps(payload)
