@@ -124,7 +124,11 @@ if options.notification_type == 'ACKNOWLEDGEMENT':
         {'title': 'Comment',    'value': options.ack_comment, 'short': False},
     ]
     attachment['fallback'] += "\nHandled By {0}: {1}".format(options.ack_author, options.ack_comment)
-
+elif options.notification_comment is not None and options.notification_comment != '':
+    attachment['fields'] = [
+        {'title': 'Comment', 'value': options.notification_comment, 'short': False},
+    ]
+    
 ## Attachment time - When the notification was generated.
 if options.time is not None:
     attachment['ts'] = options.time
