@@ -20,17 +20,21 @@ NOTIFICATION_EMOJI = {
     'CUSTOM':            ':alien:',
 }
 
+STATUS_COLORS = {
+    'WARNING':  '#FFFF00',
+    'CRITICAL': '#FF0000',
+    'UNKNOWN':  '#FFAA00',
+}
 NOTIFICATION_COLORS = {
-    'PROBLEM':           'danger',
-    'RECOVERY':          'good',
-    'ACKNOWLEDGEMENT':   'warning',
-    'FLAPPINGSTART':     '#19FFF4',
-    'FLAPPINGSTOP':      '#19FFF4',
-    'FLAPPINGDISABLED':  '#19FFF4',
-    'DOWNTIMESTART':     '#7C19FF',
-    'DOWNTIMEEND':       '#7C19FF',
-    'DOWNTIMECANCELLED': '#7C19FF',
-    'CUSTOM':            '#D3D3D3',
+    'RECOVERY':          '#00CC00',
+    'ACKNOWLEDGEMENT':   '#1240AB',
+    'FLAPPINGSTART':     '#000000',
+    'FLAPPINGSTOP':      '#000000',
+    'FLAPPINGDISABLED':  '#000000',
+    'DOWNTIMESTART':     '#999999',
+    'DOWNTIMEEND':       '#999999',
+    'DOWNTIMECANCELLED': '#999999',
+    'CUSTOM':            '#7109AA',
 }
 
 NOTIFICATION_STATUSES = {
@@ -94,6 +98,8 @@ else:
 ## Attachment color
 if options.notification_type in NOTIFICATION_COLORS:
     attachment['color'] = NOTIFICATION_COLORS[options.notification_type]
+elif options.notification_type == 'PROBLEM' and options.state in STATUS_COLORS:
+    attachment['color'] = STATUS_COLORS[options.state]
 
 ## Attachment title - equivalent to email subject
 if options.service_desc is not None:
