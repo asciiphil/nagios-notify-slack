@@ -67,6 +67,7 @@ parser.add_option('-d', '--service-desc')
 parser.add_option('-w', '--time', type='int', help='Epoch seconds (use $TIMET$)')
 parser.add_option('-s', '--state')
 parser.add_option('-o', '--output')
+parser.add_option('-l', '--long-output')
 parser.add_option('-u', '--ack-author')
 parser.add_option('-c', '--ack-comment')
 parser.add_option('-n', '--notification-comment')
@@ -113,9 +114,12 @@ if options.notification_type in NOTIFICATION_STATUSES:
 else:
     attachment['title'] += ' is {0}'.format(options.state)
     attachment['text'] = options.output
+    if options.long_output is not None and options.long_output != '':
+        attachment['text'] += "\n"
+        attachment['text'] += options.long_output
 
-## Attachment fallback - One-line summary of the notification.
-attachment['fallback'] = "{0}: {1}".format(attachment['title'], attachment['text'])
+## Attachment fallback - If atachment formatting isn't supported.
+attachment['fallback'] = attachment['title'] + "\n" + attachment['text']
 
 ## Additional fields for acknowledgements; who ACKed and what they said.
 if options.notification_type == 'ACKNOWLEDGEMENT':
