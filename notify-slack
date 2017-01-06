@@ -65,6 +65,7 @@ parser.add_option('-W', '--webhook', help='Webhook URL to use.  Overrides WEBHOO
 parser.add_option('-C', '--channel')
 parser.add_option('-U', '--username')
 parser.add_option('-I', '--icon', help='Must be a valid emoji string.')
+parser.add_option(      '--state-icon', action='store_true', help='Use the emoji for the notification type as the bot''s icon.')
 parser.add_option('-t', '--notification-type')
 parser.add_option('-a', '--host-alias')
 parser.add_option('-d', '--service-desc')
@@ -85,6 +86,10 @@ if options.webhook is None:
         print >>sys.stderr, 'No webhook given.'
         exit(1)
 
+if options.state_icon and options.icon is not None:
+    print >>sys.stderr, '--icon and --state-icon are mutually exclusive'
+    exit(1)
+
 check_option('notification type', options.notification_type)    
 check_option('host alias', options.host_alias)
 
@@ -99,6 +104,8 @@ if options.notification_type in NOTIFICATION_TEXT:
     payload['text'] = NOTIFICATION_TEXT[options.notification_type]
 else:
     payload['text'] = options.notification_type
+if options.state_icon and payload['text'][0] == ':':
+    payload['icon_emoji'], payload['text'] = payload['text'].split(' ', 1)
 
 ## Attachment color
 if options.notification_type in NOTIFICATION_COLORS:
