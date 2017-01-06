@@ -7,17 +7,17 @@ import sys
 
 import requests
 
-NOTIFICATION_EMOJI = {
-    'PROBLEM':           ':scream:',
-    'RECOVERY':          ':smiley:',
-    'ACKNOWLEDGEMENT':   ':wrench:',
-    'FLAPPINGSTART':     ':checkered_flag:',
-    'FLAPPINGSTOP':      ':end:',
-    'FLAPPINGDISABLED':  ':wrench:',
-    'DOWNTIMESTART':     ':construction:',
-    'DOWNTIMEEND':       ':construction:',
-    'DOWNTIMECANCELLED': ':construction:',
-    'CUSTOM':            ':alien:',
+NOTIFICATION_TEXT = {
+    'PROBLEM':           'PROBLEM :scream:',
+    'RECOVERY':          'Recovery :smiley:',
+    'ACKNOWLEDGEMENT':   'Acknowledgement :wrench:',
+    'FLAPPINGSTART':     'Flapping Start :checkered_flag:',
+    'FLAPPINGSTOP':      'Flapping Stop :end:',
+    'FLAPPINGDISABLED':  'Flapping Disabled :wrench:',
+    'DOWNTIMESTART':     'Downtime Start :construction:',
+    'DOWNTIMEEND':       'Downtime End :construction:',
+    'DOWNTIMECANCELLED': 'Downtime Cancelled :construction:',
+    'CUSTOM':            'Custom :alien:',
 }
 
 STATUS_COLORS = {
@@ -95,8 +95,8 @@ add_param(payload, 'username', options.username)
 add_param(payload, 'icon_emoji', options.icon)
 
 ## Message text - Just the type of notification and an appropriate emoji.
-if options.notification_type in NOTIFICATION_EMOJI:
-    payload['text'] = '{0} {1}'.format(options.notification_type, NOTIFICATION_EMOJI[options.notification_type])
+if options.notification_type in NOTIFICATION_TEXT:
+    payload['text'] = NOTIFICATION_TEXT[options.notification_type]
 else:
     payload['text'] = options.notification_type
 
