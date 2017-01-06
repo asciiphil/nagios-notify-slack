@@ -7,7 +7,7 @@ than the script in [khera][]'s [slack-integrations][] repository.
   [Nagios]: https://www.nagios.org/
   [Slack]: https://slack.com/
   [khera]: https://github.com/khera
-  [slack-integractions]: https://github.com/khera/slack-integrations
+  [slack-integrations]: https://github.com/khera/slack-integrations
 
 ## Setup
 
