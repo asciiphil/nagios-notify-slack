@@ -8,16 +8,16 @@ import sys
 import requests
 
 NOTIFICATION_TEXT = {
-    'PROBLEM':           'PROBLEM :scream:',
-    'RECOVERY':          'Recovery :smiley:',
-    'ACKNOWLEDGEMENT':   'Acknowledgement :wrench:',
-    'FLAPPINGSTART':     'Flapping Start :checkered_flag:',
-    'FLAPPINGSTOP':      'Flapping Stop :end:',
-    'FLAPPINGDISABLED':  'Flapping Disabled :wrench:',
-    'DOWNTIMESTART':     'Downtime Start :construction:',
-    'DOWNTIMEEND':       'Downtime End :construction:',
-    'DOWNTIMECANCELLED': 'Downtime Cancelled :construction:',
-    'CUSTOM':            'Custom :alien:',
+    'PROBLEM':           ':scream: PROBLEM',
+    'RECOVERY':          ':smiley: Recovery',
+    'ACKNOWLEDGEMENT':   ':wrench: Acknowledgement',
+    'FLAPPINGSTART':     ':checkered_flag: Flapping Start',
+    'FLAPPINGSTOP':      ':end: Flapping Stop',
+    'FLAPPINGDISABLED':  ':wrench: Flapping Disabled',
+    'DOWNTIMESTART':     ':construction: Downtime Start',
+    'DOWNTIMEEND':       ':construction: Downtime End',
+    'DOWNTIMECANCELLED': ':construction: Downtime Cancelled',
+    'CUSTOM':            ':alien: Custom',
 }
 
 STATUS_COLORS = {
