@@ -21,9 +21,13 @@ NOTIFICATION_EMOJI = {
 }
 
 STATUS_COLORS = {
-    'WARNING':  '#FFFF00',
-    'CRITICAL': '#FF0000',
-    'UNKNOWN':  '#FFAA00',
+    'UP':          '#00CC00',
+    'DOWN':        '#FF0000',
+    'UNREACHABLE': '#FFAA00',
+    'OK':          '#00CC00',
+    'WARNING':     '#FFFF00',
+    'CRITICAL':    '#FF0000',
+    'UNKNOWN':     '#FFAA00',
 }
 NOTIFICATION_COLORS = {
     'RECOVERY':          '#00CC00',
