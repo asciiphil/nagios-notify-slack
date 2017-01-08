@@ -8,7 +8,7 @@ import sys
 import requests
 
 NOTIFICATION_TEXT = {
-    'PROBLEM':           ':scream: PROBLEM',
+    'PROBLEM':           ':scream: Problem',
     'RECOVERY':          ':smiley: Recovery',
     'ACKNOWLEDGEMENT':   ':wrench: Acknowledgement',
     'FLAPPINGSTART':     ':checkered_flag: Flapping Start',
@@ -118,6 +118,7 @@ if options.service_desc is not None:
     attachment['title'] = '{0} / {1}'.format(options.host_alias, options.service_desc)
 else:
     attachment['title'] = options.host_alias
+payload['text'] += ': ' + attachment['title']
 
 ## Attachment text - equivalent to email body
 if options.notification_type in NOTIFICATION_STATUSES:
