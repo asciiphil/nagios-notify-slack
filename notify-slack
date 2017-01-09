@@ -17,6 +17,16 @@ STATUS_EMOJI = {
     'UNKNOWN':     ':scream:',
 }
 
+STATUS_EMOJI_CUSTOM = {
+    'UP':          ':nagios_up:',
+    'DOWN':        ':nagios_down:',
+    'UNREACHABLE': ':nagios_unreachable:',
+    'OK':          ':nagios_ok:',
+    'WARNING':     ':nagios_warning:',
+    'CRITICAL':    ':nagios_critical:',
+    'UNKNOWN':     ':nagios_unknown:',
+}
+
 NOTIFICATION_EMOJI = {
     'PROBLEM':           ':scream:',
     'RECOVERY':          ':smiley:',
@@ -28,6 +38,19 @@ NOTIFICATION_EMOJI = {
     'DOWNTIMEEND':       ':construction:',
     'DOWNTIMECANCELLED': ':construction:',
     'CUSTOM':            ':alien:',
+}
+
+NOTIFICATION_EMOJI_CUSTOM = {
+    'PROBLEM':           ':nagios_problem:',
+    'RECOVERY':          ':nagios_recovery:',
+    'ACKNOWLEDGEMENT':   ':nagios_acknowledgement:',
+    'FLAPPINGSTART':     ':nagios_flappingstart:',
+    'FLAPPINGSTOP':      ':nagios_flappingstop:',
+    'FLAPPINGDISABLED':  ':nagios_flappingdisabled:',
+    'DOWNTIMESTART':     ':nagios_downtimestart:',
+    'DOWNTIMEEND':       ':nagios_downtimeend:',
+    'DOWNTIMECANCELLED': ':nagios_downtimecancelled:',
+    'CUSTOM':            ':nagios_custom:',
 }
 
 NOTIFICATION_TEXT = {
@@ -85,10 +108,16 @@ def add_param(payload, key, value):
         payload[key] = value
 
 def notification_emoji(options):
-    if options.notification_type in ['PROBLEM', 'RECOVERY'] and options.state in STATUS_EMOJI:
-        return STATUS_EMOJI[options.state]
-    elif options.notification_type in NOTIFICATION_EMOJI:
-        return NOTIFICATION_EMOJI[options.notification_type]
+    if options.custom_emoji:
+        status_emoji = STATUS_EMOJI_CUSTOM
+        notification_emoji = NOTIFICATION_EMOJI_CUSTOM
+    else:
+        status_emoji = STATUS_EMOJI
+        notification_emoji = NOTIFICATION_EMOJI
+    if options.notification_type in ['PROBLEM', 'RECOVERY'] and options.state in status_emoji:
+        return status_emoji[options.state]
+    elif options.notification_type in notification_emoji:
+        return notification_emoji[options.notification_type]
     else:
         return None
 
@@ -98,6 +127,7 @@ parser.add_option('-C', '--channel')
 parser.add_option('-U', '--username')
 parser.add_option('-I', '--icon', help='Must be a valid emoji string.')
 parser.add_option(      '--state-icon', action='store_true', help='Use the emoji for the notification type as the bot\'s icon.')
+parser.add_option(      '--custom-emoji', action='store_true', help='Use custom emoji.  (See README fo instructions.)')
 parser.add_option('-t', '--notification-type')
 parser.add_option('-a', '--host-alias')
 parser.add_option('-d', '--service-desc')

@@ -65,3 +65,34 @@ Next, you need a contact definition.  The following will work:
 
 Simply add that contact to all of your hosts.  (Hopefully, that just
 requires adding it to a few contactgroups.)
+
+## Icons/Emoji
+
+There are a few options available for use of emoji.  By default, the
+program will use a reasonably-appropriate emoji from the standard Slack
+definitions for each notification.  The emoji will be placed inline with
+the main message.
+
+If you use the `--state-icon` parameter, the emoji will instead be used as
+the icon for the bot's message.
+
+If you use the `--custom-emoji` parameter, the program will use one of the
+following emoji, which you will need to have defined beforehand:
+
+ * `:nagios_up:`
+ * `:nagios_down:`
+ * `:nagios_unreachable:`
+ * `:nagios_ok:`
+ * `:nagios_warning:`
+ * `:nagios_critical:`
+ * `:nagios_unknown:`
+ * `:nagios_problem:`
+ * `:nagios_recovery:`
+ * `:nagios_acknowledgement:`
+ * `:nagios_flappingstart:`
+ * `:nagios_flappingstop:`
+ * `:nagios_flappingdisabled:`
+ * `:nagios_downtimestart:`
+ * `:nagios_downtimeend:`
+ * `:nagios_downtimecancelled:`
+ * `:nagios_custom:`
