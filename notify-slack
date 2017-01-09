@@ -77,12 +77,13 @@ parser.add_option('-u', '--ack-author')
 parser.add_option('-c', '--ack-comment')
 parser.add_option('-n', '--notification-comment')
 parser.add_option(      '--debug', action='store_true')
+parser.add_option(      '--no-send', dest='send', action='store_false', help='Don\'t actually send message to Slack.')
 (options, args) = parser.parse_args()
 
 if options.webhook is None:
     if 'WEBHOOK' in os.environ:
         options.webhook = os.environ['WEBHOOK']
-    else:
+    elif options.send:
         print >>sys.stderr, 'No webhook given.'
         exit(1)
 
@@ -154,5 +155,6 @@ if options.debug:
 
 if options.debug:
     print json.dumps(payload)
-r = requests.post(options.webhook, json=payload)
-r.raise_for_status()
+if options.send:
+    r = requests.post(options.webhook, json=payload)
+    r.raise_for_status()
