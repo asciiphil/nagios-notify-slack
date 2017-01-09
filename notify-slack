@@ -171,7 +171,7 @@ else:
         attachment['text'] += "\n"
         attachment['text'] += options.long_output
 
-## Attachment fallback - If atachment formatting isn't supported.
+## Attachment fallback - If attachment formatting isn't supported.
 attachment['fallback'] = attachment['title'] + "\n" + attachment['text']
 
 ## Additional fields for acknowledgements; who ACKed and what they said.
