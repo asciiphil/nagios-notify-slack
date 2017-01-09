@@ -7,17 +7,40 @@ import sys
 
 import requests
 
+STATUS_EMOJI = {
+    'UP':          ':smiley:',
+    'DOWN':        ':scream:',
+    'UNREACHABLE': ':scream:',
+    'OK':          ':smiley:',
+    'WARNING':     ':scream:',
+    'CRITICAL':    ':scream:',
+    'UNKNOWN':     ':scream:',
+}
+
+NOTIFICATION_EMOJI = {
+    'PROBLEM':           ':scream:',
+    'RECOVERY':          ':smiley:',
+    'ACKNOWLEDGEMENT':   ':wrench:',
+    'FLAPPINGSTART':     ':checkered_flag:',
+    'FLAPPINGSTOP':      ':end:',
+    'FLAPPINGDISABLED':  ':wrench:',
+    'DOWNTIMESTART':     ':construction:',
+    'DOWNTIMEEND':       ':construction:',
+    'DOWNTIMECANCELLED': ':construction:',
+    'CUSTOM':            ':alien:',
+}
+
 NOTIFICATION_TEXT = {
-    'PROBLEM':           ':scream: Problem',
-    'RECOVERY':          ':smiley: Recovery',
-    'ACKNOWLEDGEMENT':   ':wrench: Acknowledgement',
-    'FLAPPINGSTART':     ':checkered_flag: Flapping Start',
-    'FLAPPINGSTOP':      ':end: Flapping Stop',
-    'FLAPPINGDISABLED':  ':wrench: Flapping Disabled',
-    'DOWNTIMESTART':     ':construction: Downtime Start',
-    'DOWNTIMEEND':       ':construction: Downtime End',
-    'DOWNTIMECANCELLED': ':construction: Downtime Cancelled',
-    'CUSTOM':            ':alien: Custom',
+    'PROBLEM':           'Problem',
+    'RECOVERY':          'Recovery',
+    'ACKNOWLEDGEMENT':   'Acknowledgement',
+    'FLAPPINGSTART':     'Flapping Start',
+    'FLAPPINGSTOP':      'Flapping Stop',
+    'FLAPPINGDISABLED':  'Flapping Disabled',
+    'DOWNTIMESTART':     'Downtime Start',
+    'DOWNTIMEEND':       'Downtime End',
+    'DOWNTIMECANCELLED': 'Downtime Cancelled',
+    'CUSTOM':            'Custom',
 }
 
 STATUS_COLORS = {
@@ -60,6 +83,14 @@ def add_param(payload, key, value):
     if value is not None:
         payload[key] = value
 
+def notification_emoji(options):
+    if options.notification_type in ['PROBLEM', 'RECOVERY'] and options.state in STATUS_EMOJI:
+        return STATUS_EMOJI[options.state]
+    elif options.notification_type in NOTIFICATION_EMOJI:
+        return NOTIFICATION_EMOJI[options.notification_type]
+    else:
+        return None
+
 parser = optparse.OptionParser()
 parser.add_option('-W', '--webhook', help='Webhook URL to use.  Overrides WEBHOOK environment variable.')
 parser.add_option('-C', '--channel')
@@ -100,13 +131,22 @@ add_param(payload, 'channel', options.channel)
 add_param(payload, 'username', options.username)
 add_param(payload, 'icon_emoji', options.icon)
 
-## Message text - Just the type of notification and an appropriate emoji.
+## Prime the main message
+payload['text'] = ''
+
+## emoji
+emoji = notification_emoji(options)
+if emoji is not None:
+    if options.state_icon:
+        payload['icon_emoji'] = emoji
+    else:
+        payload['text'] += emoji + ' '
+
+## Put the notification type in the main message.
 if options.notification_type in NOTIFICATION_TEXT:
-    payload['text'] = NOTIFICATION_TEXT[options.notification_type]
+    payload['text'] += NOTIFICATION_TEXT[options.notification_type]
 else:
-    payload['text'] = options.notification_type
-if options.state_icon and payload['text'][0] == ':':
-    payload['icon_emoji'], payload['text'] = payload['text'].split(' ', 1)
+    payload['text'] += options.notification_type
 
 ## Attachment color
 if options.notification_type in NOTIFICATION_COLORS:
